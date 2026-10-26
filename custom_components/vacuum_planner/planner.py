@@ -1230,6 +1230,8 @@ class VacuumPlanner:
             room = self.rooms[rid]
             use = mode or (room.mode if room.mode != MODE_OFF else MODE_VACUUM_MOP)
             self.queue.add(rid, use, SOURCE_MANUAL, now, front=front)
+            if mode is not None:
+                self.queue.get(rid).mode = mode  # an explicit mode replaces the entry's mode
             if room.skip_reason == SKIP_TODAY:
                 room.skip_until = None
                 room.skip_reason = None
