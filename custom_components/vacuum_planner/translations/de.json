@@ -1,0 +1,398 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Saugplaner",
+        "description": "Wähle den Roboter und woher die Anwesenheit kommt.",
+        "data": {
+          "name": "Name",
+          "vacuum": "Saugroboter",
+          "task_status_sensor": "Aufgabenstatus-Sensor",
+          "error_sensor": "Fehlermeldungs-Sensor",
+          "battery_sensor": "Akku-Sensor",
+          "water_sensor": "Frischwasser-Sensor",
+          "dock_status_sensor": "Stationsstatus-Sensor",
+          "proximity_entry": "Umkreis (Zuhause-Zone)",
+          "guest_mode": "Gastmodus",
+          "workday_sensor": "Arbeitstag-Sensor",
+          "calendars": "Kalender"
+        },
+        "data_description": {
+          "vacuum": "Muss Raumreinigung per send_command room_clean können (z. B. eufy robovac_mqtt).",
+          "task_status_sensor": "Ein Auftrag gilt als erledigt, wenn dieser Sensor auf „Completed“ wechselt.",
+          "error_sensor": "Jeder Text außer leer/none gilt als Fehler.",
+          "water_sensor": "Wisch-Etappen warten, solange der Stand unter dem Minimum liegt.",
+          "dock_status_sensor": "Die nächste Etappe wartet, solange die Station wäscht oder absaugt.",
+          "proximity_entry": "Liefert die Personen, ihre Entfernung und Bewegungsrichtung.",
+          "guest_mode": "Solange an, wird nicht automatisch geputzt.",
+          "workday_sensor": "Aus an einem Werktag bedeutet Feiertag (Ruhetag).",
+          "calendars": "Laufende Termine verraten, wie lange die Wohnung leer bleibt."
+        }
+      },
+      "rooms": {
+        "title": "Räume",
+        "description": "Räume, die einen Putzplan bekommen. Eine Raum-ID kannst du auch eintippen, falls sie fehlt.",
+        "data": {
+          "room_ids": "Räume"
+        }
+      },
+      "room": {
+        "title": "Raum {room} (ID {id})",
+        "data": {
+          "name": "Name",
+          "icon": "Symbol",
+          "blockers": "Nicht putzen, solange aktiv",
+          "position": "Position in der Route"
+        },
+        "data_description": {
+          "blockers": "z. B. ein Mediaplayer – der Raum wartet bis 5 Minuten nach Ende der Wiedergabe bzw. nach dem Ausschalten.",
+          "position": "Räume einer Etappe werden in dieser Reihenfolge geputzt (Nachbarräume nebeneinander)."
+        }
+      },
+      "notify": {
+        "title": "Benachrichtigungen",
+        "description": "Handy jeder Person (Companion-App) für Vorwarnung, Heimkommen-Frage und Fehler. Leer lassen = keine Benachrichtigung."
+      },
+      "tuning": {
+        "title": "Feinabstimmung",
+        "data": {
+          "stage_pause": "Pause zwischen Etappen",
+          "away_delay": "Mindestens weg seit",
+          "return_buffer": "Sicherheitspuffer vor Rückkehr",
+          "travel_time": "Heimweg nach einem Termin",
+          "default_absence": "Angenommene Abwesenheit ohne Daten",
+          "stage_overhead": "Feste Zeit je Etappe",
+          "min_water": "Mindest-Frischwasser"
+        },
+        "data_description": {
+          "stage_pause": "Zeit in der Station nach einer Etappe (Mopp waschen, absaugen).",
+          "away_delay": "So lange muss niemand zuhause (und weit genug weg) sein, bevor er startet.",
+          "return_buffer": "Der Plan endet so lange vor der erwarteten Rückkehr.",
+          "travel_time": "Wird auf das Ende eines Kalendertermins aufgeschlagen.",
+          "default_absence": "Gilt, bis genug Abwesenheiten gelernt sind.",
+          "stage_overhead": "Aus- und Einfahren, Mopp-Wäsche.",
+          "min_water": "Darunter warten Wisch-Etappen."
+        }
+      }
+    },
+    "error": {
+      "no_rooms": "Wähle mindestens einen Raum."
+    },
+    "abort": {
+      "already_configured": "Für diesen Roboter gibt es schon einen Planer."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Roboter und Anwesenheit",
+        "data": {
+          "vacuum": "Saugroboter",
+          "task_status_sensor": "Aufgabenstatus-Sensor",
+          "error_sensor": "Fehlermeldungs-Sensor",
+          "battery_sensor": "Akku-Sensor",
+          "water_sensor": "Frischwasser-Sensor",
+          "dock_status_sensor": "Stationsstatus-Sensor",
+          "proximity_entry": "Umkreis (Zuhause-Zone)",
+          "guest_mode": "Gastmodus",
+          "workday_sensor": "Arbeitstag-Sensor",
+          "calendars": "Kalender"
+        },
+        "data_description": {
+          "vacuum": "Muss Raumreinigung per send_command room_clean können (z. B. eufy robovac_mqtt).",
+          "task_status_sensor": "Ein Auftrag gilt als erledigt, wenn dieser Sensor auf „Completed“ wechselt.",
+          "error_sensor": "Jeder Text außer leer/none gilt als Fehler.",
+          "water_sensor": "Wisch-Etappen warten, solange der Stand unter dem Minimum liegt.",
+          "dock_status_sensor": "Die nächste Etappe wartet, solange die Station wäscht oder absaugt.",
+          "proximity_entry": "Liefert die Personen, ihre Entfernung und Bewegungsrichtung.",
+          "guest_mode": "Solange an, wird nicht automatisch geputzt.",
+          "workday_sensor": "Aus an einem Werktag bedeutet Feiertag (Ruhetag).",
+          "calendars": "Laufende Termine verraten, wie lange die Wohnung leer bleibt."
+        }
+      },
+      "rooms": {
+        "title": "Räume",
+        "description": "Räume, die einen Putzplan bekommen. Eine Raum-ID kannst du auch eintippen, falls sie fehlt.",
+        "data": {
+          "room_ids": "Räume"
+        }
+      },
+      "room": {
+        "title": "Raum {room} (ID {id})",
+        "data": {
+          "name": "Name",
+          "icon": "Symbol",
+          "blockers": "Nicht putzen, solange aktiv",
+          "position": "Position in der Route"
+        },
+        "data_description": {
+          "blockers": "z. B. ein Mediaplayer – der Raum wartet bis 5 Minuten nach Ende der Wiedergabe bzw. nach dem Ausschalten.",
+          "position": "Räume einer Etappe werden in dieser Reihenfolge geputzt (Nachbarräume nebeneinander)."
+        }
+      },
+      "notify": {
+        "title": "Benachrichtigungen",
+        "description": "Handy jeder Person (Companion-App) für Vorwarnung, Heimkommen-Frage und Fehler. Leer lassen = keine Benachrichtigung."
+      },
+      "tuning": {
+        "title": "Feinabstimmung",
+        "data": {
+          "stage_pause": "Pause zwischen Etappen",
+          "away_delay": "Mindestens weg seit",
+          "return_buffer": "Sicherheitspuffer vor Rückkehr",
+          "travel_time": "Heimweg nach einem Termin",
+          "default_absence": "Angenommene Abwesenheit ohne Daten",
+          "stage_overhead": "Feste Zeit je Etappe",
+          "min_water": "Mindest-Frischwasser"
+        },
+        "data_description": {
+          "stage_pause": "Zeit in der Station nach einer Etappe (Mopp waschen, absaugen).",
+          "away_delay": "So lange muss niemand zuhause (und weit genug weg) sein, bevor er startet.",
+          "return_buffer": "Der Plan endet so lange vor der erwarteten Rückkehr.",
+          "travel_time": "Wird auf das Ende eines Kalendertermins aufgeschlagen.",
+          "default_absence": "Gilt, bis genug Abwesenheiten gelernt sind.",
+          "stage_overhead": "Aus- und Einfahren, Mopp-Wäsche.",
+          "min_water": "Darunter warten Wisch-Etappen."
+        }
+      }
+    },
+    "error": {
+      "no_rooms": "Wähle mindestens einen Raum."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Kein geladener Saugplaner gefunden."
+    },
+    "pick_entry": {
+      "message": "Mehrere Planer eingerichtet – bitte config_entry_id angeben."
+    },
+    "unknown_room": {
+      "message": "Unbekannter Raum: {room}."
+    },
+    "robot_busy": {
+      "message": "Der Roboter ist nicht in der Station oder hat schon einen Auftrag."
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "vacuum": "Saugen",
+        "vacuum_mop": "Saugen & Wischen",
+        "mop": "Wischen",
+        "mopping_after_sweeping": "Erst saugen, dann wischen"
+      }
+    },
+    "plan_mode": {
+      "options": {
+        "off": "Aus",
+        "vacuum": "Saugen",
+        "vacuum_mop": "Saugen & Wischen",
+        "mop": "Wischen",
+        "mopping_after_sweeping": "Erst saugen, dann wischen"
+      }
+    }
+  },
+  "services": {
+    "enqueue": {
+      "name": "Einreihen",
+      "description": "Reiht Räume in die Warteschlange ein (manuelle zuerst).",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        },
+        "rooms": {
+          "name": "Räume",
+          "description": "Raum-IDs oder Namen."
+        },
+        "mode": {
+          "name": "Modus",
+          "description": "Standard: Modus aus dem Plan."
+        },
+        "front": {
+          "name": "Nach vorne",
+          "description": "An den Anfang der Warteschlange."
+        }
+      }
+    },
+    "dequeue": {
+      "name": "Aus Warteschlange nehmen",
+      "description": "Nimmt Räume aus der Warteschlange.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        },
+        "rooms": {
+          "name": "Räume",
+          "description": "Raum-IDs oder Namen."
+        },
+        "skip_today": {
+          "name": "Heute auslassen",
+          "description": "Ein fälliger Raum kommt erst morgen wieder in die Warteschlange."
+        }
+      }
+    },
+    "move": {
+      "name": "Verschieben",
+      "description": "Verschiebt einen Raum an eine Position (0 = vorne).",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        },
+        "room": {
+          "name": "Raum",
+          "description": "Raum-ID oder Name."
+        },
+        "position": {
+          "name": "Position",
+          "description": "0 ist vorne."
+        }
+      }
+    },
+    "clear_queue": {
+      "name": "Warteschlange leeren",
+      "description": "Leert die Warteschlange; fällige Räume kommen morgen wieder.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        }
+      }
+    },
+    "enqueue_due": {
+      "name": "Fällige einreihen",
+      "description": "Reiht alle fälligen Räume ein, auch heute ausgelassene.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        }
+      }
+    },
+    "start": {
+      "name": "Warteschlange starten",
+      "description": "Arbeitet die Warteschlange jetzt ab.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        },
+        "force": {
+          "name": "Anwesenheit und Zeit ignorieren",
+          "description": "Aus: startet, sobald die Automatik-Bedingungen passen (ohne Vorwarnung)."
+        }
+      }
+    },
+    "stop": {
+      "name": "Stoppen",
+      "description": "Hört auf, die Warteschlange abzuarbeiten.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        },
+        "return_home": {
+          "name": "Zur Station",
+          "description": "Einen fahrenden Roboter zur Station schicken."
+        }
+      }
+    },
+    "clean_now": {
+      "name": "Jetzt putzen",
+      "description": "Putzt Räume sofort (zählt nach Abschluss im Plan).",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        },
+        "rooms": {
+          "name": "Räume",
+          "description": "Raum-IDs oder Namen, oder „alle“."
+        },
+        "mode": {
+          "name": "Modus",
+          "description": "Reinigungsmodus."
+        }
+      }
+    },
+    "pause_room": {
+      "name": "Raum aussetzen",
+      "description": "Nimmt Räume eine Zeit lang aus dem Plan.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        },
+        "rooms": {
+          "name": "Räume",
+          "description": "Raum-IDs oder Namen."
+        },
+        "until": {
+          "name": "Bis",
+          "description": "Ende der Pause."
+        },
+        "days": {
+          "name": "Tage",
+          "description": "Pause bis zum Beginn des so vielten Tages (1 = bis morgen)."
+        }
+      }
+    },
+    "resume_room": {
+      "name": "Raum fortsetzen",
+      "description": "Beendet eine Pause.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        },
+        "rooms": {
+          "name": "Räume",
+          "description": "Raum-IDs oder Namen."
+        }
+      }
+    },
+    "set_plan": {
+      "name": "Plan setzen",
+      "description": "Ändert Modus und/oder Intervall eines Raums.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        },
+        "room": {
+          "name": "Raum",
+          "description": "Raum-ID oder Name."
+        },
+        "mode": {
+          "name": "Modus",
+          "description": "Modus im Plan."
+        },
+        "interval": {
+          "name": "Intervall",
+          "description": "Tage zwischen zwei Reinigungen."
+        }
+      }
+    },
+    "set_last_cleaned": {
+      "name": "Zuletzt geputzt setzen",
+      "description": "Trägt ein, wann Räume zuletzt geputzt wurden.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        },
+        "rooms": {
+          "name": "Räume",
+          "description": "Raum-IDs oder Namen."
+        },
+        "timestamp": {
+          "name": "Zeitpunkt",
+          "description": "Standard: jetzt."
+        }
+      }
+    }
+  }
+}

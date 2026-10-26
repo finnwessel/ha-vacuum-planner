@@ -1,0 +1,142 @@
+{
+  "entity": {
+    "sensor": {
+      "status": {
+        "default": "mdi:robot-vacuum",
+        "state": {
+          "idle": "mdi:robot-vacuum-variant",
+          "waiting": "mdi:timer-sand",
+          "prewarn": "mdi:bell-ring-outline",
+          "error": "mdi:robot-vacuum-alert",
+          "between_stages": "mdi:home-import-outline"
+        }
+      },
+      "queue": {
+        "default": "mdi:playlist-play"
+      },
+      "expected_return": {
+        "default": "mdi:home-clock-outline"
+      },
+      "room_next_due": {
+        "default": "mdi:calendar-clock"
+      },
+      "room_last_cleaned": {
+        "default": "mdi:calendar-check"
+      }
+    },
+    "select": {
+      "room_mode": {
+        "default": "mdi:broom",
+        "state": {
+          "off": "mdi:close-circle-outline",
+          "vacuum": "mdi:robot-vacuum",
+          "mop": "mdi:water",
+          "mopping_after_sweeping": "mdi:swap-horizontal"
+        }
+      }
+    },
+    "number": {
+      "room_interval": {
+        "default": "mdi:calendar-refresh"
+      },
+      "min_distance": {
+        "default": "mdi:map-marker-distance"
+      },
+      "homeway_radius": {
+        "default": "mdi:map-marker-radius"
+      },
+      "min_battery": {
+        "default": "mdi:battery-50"
+      },
+      "prewarn": {
+        "default": "mdi:bell-alert-outline"
+      },
+      "plan_b_days": {
+        "default": "mdi:calendar-alert"
+      },
+      "retries": {
+        "default": "mdi:restart"
+      }
+    },
+    "switch": {
+      "auto_clean": {
+        "default": "mdi:robot-vacuum",
+        "state": {
+          "off": "mdi:robot-vacuum-off"
+        }
+      },
+      "quiet_midday": {
+        "default": "mdi:weather-sunny"
+      },
+      "quiet_sundays": {
+        "default": "mdi:calendar-weekend"
+      }
+    },
+    "time": {
+      "day_start": {
+        "default": "mdi:clock-start"
+      },
+      "day_end": {
+        "default": "mdi:clock-end"
+      },
+      "quiet_start": {
+        "default": "mdi:volume-off"
+      },
+      "quiet_end": {
+        "default": "mdi:volume-high"
+      },
+      "plan_b_time": {
+        "default": "mdi:bell-question-outline"
+      }
+    },
+    "button": {
+      "start": {
+        "default": "mdi:play"
+      },
+      "stop": {
+        "default": "mdi:stop"
+      },
+      "enqueue_due": {
+        "default": "mdi:playlist-plus"
+      }
+    }
+  },
+  "services": {
+    "enqueue": {
+      "service": "mdi:playlist-plus"
+    },
+    "dequeue": {
+      "service": "mdi:playlist-minus"
+    },
+    "move": {
+      "service": "mdi:swap-vertical"
+    },
+    "clear_queue": {
+      "service": "mdi:playlist-remove"
+    },
+    "enqueue_due": {
+      "service": "mdi:calendar-alert"
+    },
+    "start": {
+      "service": "mdi:play"
+    },
+    "stop": {
+      "service": "mdi:stop"
+    },
+    "clean_now": {
+      "service": "mdi:robot-vacuum"
+    },
+    "pause_room": {
+      "service": "mdi:pause-circle-outline"
+    },
+    "resume_room": {
+      "service": "mdi:play-circle-outline"
+    },
+    "set_plan": {
+      "service": "mdi:calendar-edit"
+    },
+    "set_last_cleaned": {
+      "service": "mdi:calendar-check"
+    }
+  }
+}

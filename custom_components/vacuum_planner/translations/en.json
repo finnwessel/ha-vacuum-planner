@@ -1,0 +1,500 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Vacuum planner",
+        "description": "Choose the robot and where presence comes from.",
+        "data": {
+          "name": "Name",
+          "vacuum": "Robot vacuum",
+          "task_status_sensor": "Task status sensor",
+          "error_sensor": "Error message sensor",
+          "battery_sensor": "Battery sensor",
+          "water_sensor": "Clean water level sensor",
+          "dock_status_sensor": "Dock status sensor",
+          "proximity_entry": "Proximity (home zone)",
+          "guest_mode": "Guest mode",
+          "workday_sensor": "Workday sensor",
+          "calendars": "Calendars"
+        },
+        "data_description": {
+          "vacuum": "Must support room cleaning via send_command room_clean (e.g. eufy robovac_mqtt).",
+          "task_status_sensor": "A job counts as done when this sensor changes to \"Completed\".",
+          "error_sensor": "Any text other than empty/none counts as an error.",
+          "water_sensor": "Wet stages wait while the level is below the minimum.",
+          "dock_status_sensor": "The next stage waits while the dock is washing or emptying.",
+          "proximity_entry": "Provides the people, their distance and direction of travel.",
+          "guest_mode": "No automatic cleaning while this is on.",
+          "workday_sensor": "Off on a weekday means public holiday (quiet day).",
+          "calendars": "Appointments that are running now tell when the flat stays empty."
+        }
+      },
+      "rooms": {
+        "title": "Rooms",
+        "description": "Rooms that get a cleaning plan. You can type a room id if it is not listed.",
+        "data": {
+          "room_ids": "Rooms"
+        }
+      },
+      "room": {
+        "title": "Room {room} (id {id})",
+        "data": {
+          "name": "Name",
+          "icon": "Icon",
+          "blockers": "Do not clean while active",
+          "position": "Route position"
+        },
+        "data_description": {
+          "blockers": "e.g. a media player – the room waits until 5 minutes after it stops playing / turns off.",
+          "position": "Rooms of a stage are cleaned in this order (neighbouring rooms next to each other)."
+        }
+      },
+      "notify": {
+        "title": "Notifications",
+        "description": "Phone of each person (Companion app) for pre-warnings, return questions and errors. Leave empty for no notifications."
+      },
+      "tuning": {
+        "title": "Fine tuning",
+        "data": {
+          "stage_pause": "Pause between stages",
+          "away_delay": "Away for at least",
+          "return_buffer": "Safety buffer before return",
+          "travel_time": "Travel time after an appointment",
+          "default_absence": "Assumed absence without data",
+          "stage_overhead": "Fixed time per stage",
+          "min_water": "Minimum clean water"
+        },
+        "data_description": {
+          "stage_pause": "Time in the dock after a stage (mop washing, emptying).",
+          "away_delay": "Nobody home (and far enough away) for this long before cleaning starts.",
+          "return_buffer": "The plan ends this long before the expected return.",
+          "travel_time": "Added to the end of a calendar appointment.",
+          "default_absence": "Used until enough absences have been learned.",
+          "stage_overhead": "Leaving and returning to the dock, mop washing.",
+          "min_water": "Wet stages wait below this level."
+        }
+      }
+    },
+    "error": {
+      "no_rooms": "Select at least one room."
+    },
+    "abort": {
+      "already_configured": "This robot already has a planner."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Robot and presence",
+        "data": {
+          "vacuum": "Robot vacuum",
+          "task_status_sensor": "Task status sensor",
+          "error_sensor": "Error message sensor",
+          "battery_sensor": "Battery sensor",
+          "water_sensor": "Clean water level sensor",
+          "dock_status_sensor": "Dock status sensor",
+          "proximity_entry": "Proximity (home zone)",
+          "guest_mode": "Guest mode",
+          "workday_sensor": "Workday sensor",
+          "calendars": "Calendars"
+        },
+        "data_description": {
+          "vacuum": "Must support room cleaning via send_command room_clean (e.g. eufy robovac_mqtt).",
+          "task_status_sensor": "A job counts as done when this sensor changes to \"Completed\".",
+          "error_sensor": "Any text other than empty/none counts as an error.",
+          "water_sensor": "Wet stages wait while the level is below the minimum.",
+          "dock_status_sensor": "The next stage waits while the dock is washing or emptying.",
+          "proximity_entry": "Provides the people, their distance and direction of travel.",
+          "guest_mode": "No automatic cleaning while this is on.",
+          "workday_sensor": "Off on a weekday means public holiday (quiet day).",
+          "calendars": "Appointments that are running now tell when the flat stays empty."
+        }
+      },
+      "rooms": {
+        "title": "Rooms",
+        "description": "Rooms that get a cleaning plan. You can type a room id if it is not listed.",
+        "data": {
+          "room_ids": "Rooms"
+        }
+      },
+      "room": {
+        "title": "Room {room} (id {id})",
+        "data": {
+          "name": "Name",
+          "icon": "Icon",
+          "blockers": "Do not clean while active",
+          "position": "Route position"
+        },
+        "data_description": {
+          "blockers": "e.g. a media player – the room waits until 5 minutes after it stops playing / turns off.",
+          "position": "Rooms of a stage are cleaned in this order (neighbouring rooms next to each other)."
+        }
+      },
+      "notify": {
+        "title": "Notifications",
+        "description": "Phone of each person (Companion app) for pre-warnings, return questions and errors. Leave empty for no notifications."
+      },
+      "tuning": {
+        "title": "Fine tuning",
+        "data": {
+          "stage_pause": "Pause between stages",
+          "away_delay": "Away for at least",
+          "return_buffer": "Safety buffer before return",
+          "travel_time": "Travel time after an appointment",
+          "default_absence": "Assumed absence without data",
+          "stage_overhead": "Fixed time per stage",
+          "min_water": "Minimum clean water"
+        },
+        "data_description": {
+          "stage_pause": "Time in the dock after a stage (mop washing, emptying).",
+          "away_delay": "Nobody home (and far enough away) for this long before cleaning starts.",
+          "return_buffer": "The plan ends this long before the expected return.",
+          "travel_time": "Added to the end of a calendar appointment.",
+          "default_absence": "Used until enough absences have been learned.",
+          "stage_overhead": "Leaving and returning to the dock, mop washing.",
+          "min_water": "Wet stages wait below this level."
+        }
+      }
+    },
+    "error": {
+      "no_rooms": "Select at least one room."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "status": {
+        "name": "Status",
+        "state": {
+          "idle": "Idle",
+          "waiting": "Waiting",
+          "prewarn": "Starting soon",
+          "starting": "Starting",
+          "cleaning": "Cleaning",
+          "between_stages": "Between stages",
+          "error": "Error"
+        }
+      },
+      "queue": {
+        "name": "Queue"
+      },
+      "expected_return": {
+        "name": "Expected return"
+      },
+      "room_next_due": {
+        "name": "{room} next due"
+      },
+      "room_last_cleaned": {
+        "name": "{room} last cleaned"
+      }
+    },
+    "select": {
+      "room_mode": {
+        "name": "{room} mode",
+        "state": {
+          "off": "Off",
+          "vacuum": "Vacuum",
+          "vacuum_mop": "Vacuum & mop",
+          "mop": "Mop",
+          "mopping_after_sweeping": "Vacuum, then mop"
+        }
+      }
+    },
+    "number": {
+      "room_interval": {
+        "name": "{room} interval"
+      },
+      "min_distance": {
+        "name": "Minimum distance"
+      },
+      "homeway_radius": {
+        "name": "Way home radius"
+      },
+      "min_battery": {
+        "name": "Minimum battery"
+      },
+      "prewarn": {
+        "name": "Pre-warning"
+      },
+      "plan_b_days": {
+        "name": "Ask when overdue for"
+      },
+      "retries": {
+        "name": "Retries after an error"
+      }
+    },
+    "switch": {
+      "auto_clean": {
+        "name": "Automatic cleaning"
+      },
+      "quiet_midday": {
+        "name": "Midday rest"
+      },
+      "quiet_sundays": {
+        "name": "Quiet on Sundays and holidays"
+      }
+    },
+    "time": {
+      "day_start": {
+        "name": "Cleaning from"
+      },
+      "day_end": {
+        "name": "Cleaning until"
+      },
+      "quiet_start": {
+        "name": "Midday rest from"
+      },
+      "quiet_end": {
+        "name": "Midday rest until"
+      },
+      "plan_b_time": {
+        "name": "Ask at"
+      }
+    },
+    "button": {
+      "start": {
+        "name": "Start now"
+      },
+      "stop": {
+        "name": "Stop"
+      },
+      "enqueue_due": {
+        "name": "Queue due rooms"
+      }
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "No loaded vacuum planner found."
+    },
+    "pick_entry": {
+      "message": "Several planners are set up – pass config_entry_id."
+    },
+    "unknown_room": {
+      "message": "Unknown room: {room}."
+    },
+    "robot_busy": {
+      "message": "The robot is not in the dock or already running a job."
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "vacuum": "Vacuum",
+        "vacuum_mop": "Vacuum & mop",
+        "mop": "Mop",
+        "mopping_after_sweeping": "Vacuum, then mop"
+      }
+    },
+    "plan_mode": {
+      "options": {
+        "off": "Off",
+        "vacuum": "Vacuum",
+        "vacuum_mop": "Vacuum & mop",
+        "mop": "Mop",
+        "mopping_after_sweeping": "Vacuum, then mop"
+      }
+    }
+  },
+  "services": {
+    "enqueue": {
+      "name": "Add to queue",
+      "description": "Adds rooms to the queue (manual entries come first).",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        },
+        "rooms": {
+          "name": "Rooms",
+          "description": "Room ids or names."
+        },
+        "mode": {
+          "name": "Mode",
+          "description": "Default: the room's plan mode."
+        },
+        "front": {
+          "name": "To the front",
+          "description": "Put the rooms at the front of the queue."
+        }
+      }
+    },
+    "dequeue": {
+      "name": "Remove from queue",
+      "description": "Removes rooms from the queue.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        },
+        "rooms": {
+          "name": "Rooms",
+          "description": "Room ids or names."
+        },
+        "skip_today": {
+          "name": "Skip today",
+          "description": "A due room is not put back into the queue until tomorrow."
+        }
+      }
+    },
+    "move": {
+      "name": "Move in queue",
+      "description": "Moves a room to a position (0 = front).",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        },
+        "room": {
+          "name": "Room",
+          "description": "Room id or name."
+        },
+        "position": {
+          "name": "Position",
+          "description": "0 is the front."
+        }
+      }
+    },
+    "clear_queue": {
+      "name": "Clear queue",
+      "description": "Empties the queue; due rooms come back tomorrow.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        }
+      }
+    },
+    "enqueue_due": {
+      "name": "Queue due rooms",
+      "description": "Puts all due rooms into the queue, also those skipped today.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        }
+      }
+    },
+    "start": {
+      "name": "Start queue",
+      "description": "Works through the queue now.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        },
+        "force": {
+          "name": "Ignore presence and time",
+          "description": "Off: start as soon as the automatic conditions are met (without pre-warning)."
+        }
+      }
+    },
+    "stop": {
+      "name": "Stop",
+      "description": "Stops working through the queue.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        },
+        "return_home": {
+          "name": "Back to dock",
+          "description": "Send a running robot back to the dock."
+        }
+      }
+    },
+    "clean_now": {
+      "name": "Clean now",
+      "description": "Cleans rooms right away (counted in the plan when finished).",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        },
+        "rooms": {
+          "name": "Rooms",
+          "description": "Room ids or names, or \"all\"."
+        },
+        "mode": {
+          "name": "Mode",
+          "description": "Cleaning mode."
+        }
+      }
+    },
+    "pause_room": {
+      "name": "Pause room",
+      "description": "Leaves rooms out of the plan for a while.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        },
+        "rooms": {
+          "name": "Rooms",
+          "description": "Room ids or names."
+        },
+        "until": {
+          "name": "Until",
+          "description": "End of the pause."
+        },
+        "days": {
+          "name": "Days",
+          "description": "Pause until the start of this many days from now (1 = until tomorrow)."
+        }
+      }
+    },
+    "resume_room": {
+      "name": "Resume room",
+      "description": "Ends a pause.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        },
+        "rooms": {
+          "name": "Rooms",
+          "description": "Room ids or names."
+        }
+      }
+    },
+    "set_plan": {
+      "name": "Set plan",
+      "description": "Changes mode and/or interval of a room.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        },
+        "room": {
+          "name": "Room",
+          "description": "Room id or name."
+        },
+        "mode": {
+          "name": "Mode",
+          "description": "Plan mode."
+        },
+        "interval": {
+          "name": "Interval",
+          "description": "Days between cleanings."
+        }
+      }
+    },
+    "set_last_cleaned": {
+      "name": "Set last cleaned",
+      "description": "Records when rooms were cleaned last.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planner",
+          "description": "Only needed with several planners."
+        },
+        "rooms": {
+          "name": "Rooms",
+          "description": "Room ids or names."
+        },
+        "timestamp": {
+          "name": "Time",
+          "description": "Default: now."
+        }
+      }
+    }
+  }
+}
