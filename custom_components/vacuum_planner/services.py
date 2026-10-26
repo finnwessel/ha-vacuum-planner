@@ -24,6 +24,7 @@ from .const import (
     ATTR_RETURN_HOME,
     ATTR_ROOM,
     ATTR_ROOMS,
+    ATTR_SKIP,
     ATTR_SKIP_TODAY,
     ATTR_TIMESTAMP,
     ATTR_UNTIL,
@@ -41,6 +42,7 @@ from .const import (
     SERVICE_RESUME_ROOM,
     SERVICE_SET_LAST_CLEANED,
     SERVICE_SET_PLAN,
+    SERVICE_SKIP_TODAY,
     SERVICE_START,
     SERVICE_STOP,
 )
@@ -99,6 +101,7 @@ SCHEMAS: dict[str, vol.Schema] = {
             vol.Optional(ATTR_INTERVAL): vol.All(vol.Coerce(int), vol.Range(min=1, max=30)),
         }
     ),
+    SERVICE_SKIP_TODAY: vol.Schema({**BASE, vol.Optional(ATTR_SKIP, default=True): cv.boolean}),
     SERVICE_SET_LAST_CLEANED: vol.Schema(
         {**BASE, vol.Required(ATTR_ROOMS): ROOMS, vol.Optional(ATTR_TIMESTAMP): cv.datetime}
     ),
@@ -174,6 +177,8 @@ def async_setup_services(hass: HomeAssistant) -> None:
             planner.set_plan(
                 _rooms(planner, [data[ATTR_ROOM]])[0], data.get(ATTR_MODE), data.get(ATTR_INTERVAL)
             )
+        elif service == SERVICE_SKIP_TODAY:
+            await planner.async_skip_today(data[ATTR_SKIP])
         elif service == SERVICE_SET_LAST_CLEANED:
             when = _local(data[ATTR_TIMESTAMP]) if ATTR_TIMESTAMP in data else dt_util.now()
             planner.set_last_cleaned(_rooms(planner, data[ATTR_ROOMS]), when)

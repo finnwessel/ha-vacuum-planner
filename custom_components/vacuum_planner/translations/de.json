@@ -393,6 +393,20 @@
           "description": "Standard: jetzt."
         }
       }
+    },
+    "skip_today": {
+      "name": "Heute nicht",
+      "description": "Heute nicht automatisch putzen (die Warteschlange bleibt).",
+      "fields": {
+        "config_entry_id": {
+          "name": "Planer",
+          "description": "Nur bei mehreren Planern nötig."
+        },
+        "skip": {
+          "name": "Auslassen",
+          "description": "Aus: heute doch wieder automatisch putzen."
+        }
+      }
     }
   }
 }

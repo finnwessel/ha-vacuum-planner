@@ -1274,6 +1274,14 @@ class VacuumPlanner:
         sync_due(self.queue, self.rooms, now)
         self.changed()
 
+    async def async_skip_today(self, skip: bool) -> None:
+        async with self._lock:
+            self.skip_auto_date = dt_util.now().date() if skip else None
+            await self._async_cancel_prewarn()
+            self._save()
+            self._notify_listeners()
+        self._schedule()
+
     @callback
     def start(self, force: bool = True) -> None:
         self.session_active = True

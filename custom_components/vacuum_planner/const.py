@@ -118,6 +118,8 @@ SERVICE_PAUSE_ROOM: Final = "pause_room"
 SERVICE_RESUME_ROOM: Final = "resume_room"
 SERVICE_SET_PLAN: Final = "set_plan"
 SERVICE_SET_LAST_CLEANED: Final = "set_last_cleaned"
+SERVICE_SKIP_TODAY: Final = "skip_today"
+ATTR_SKIP: Final = "skip"
 
 # Notification actions (mobile_app_notification_action).
 ACTION_PREFIX: Final = "VACUUM_PLANNER_"

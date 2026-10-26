@@ -146,3 +146,11 @@ set_last_cleaned:
     timestamp:
       selector:
         datetime:
+
+skip_today:
+  fields:
+    <<: *entry
+    skip:
+      default: true
+      selector:
+        boolean:

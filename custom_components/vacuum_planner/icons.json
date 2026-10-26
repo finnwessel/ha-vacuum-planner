@@ -137,6 +137,9 @@
     },
     "set_last_cleaned": {
       "service": "mdi:calendar-check"
+    },
+    "skip_today": {
+      "service": "mdi:calendar-remove"
     }
   }
 }
