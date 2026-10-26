@@ -194,37 +194,29 @@ class _RoomSteps:
         return list(entry.data.get("tracked_entities", [])) if entry else []
 
     async def async_step_notify(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        """Phones per person and fine tuning in one form."""
         persons = self._persons()
         current = self.values.get(CONF_NOTIFY) or {}
-        if user_input is not None or not persons:
-            self.values[CONF_NOTIFY] = {p: d for p, d in (user_input or {}).items() if d}
-            return await self.async_step_tuning()
-        schema = vol.Schema(
-            {
-                _opt(person, current): selector.DeviceSelector(
-                    selector.DeviceSelectorConfig(integration="mobile_app")
-                )
-                for person in persons
-            }
-        )
-        return self.async_show_form(step_id="notify", data_schema=schema)
-
-    async def async_step_tuning(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         if user_input is not None:
-            self.values.update({k: int(v) for k, v in user_input.items()})
+            self.values[CONF_NOTIFY] = {p: user_input[p] for p in persons if user_input.get(p)}
+            self.values.update({k: int(user_input[k]) for k in TUNING if k in user_input})
             return self._finish()
-        schema = vol.Schema(
-            {
-                vol.Required(key, default=self.values.get(key, DEFAULT_OPTIONS[key])): selector.NumberSelector(
+        fields: dict[vol.Marker, Any] = {
+            _opt(person, current): selector.DeviceSelector(
+                selector.DeviceSelectorConfig(integration="mobile_app")
+            )
+            for person in persons
+        }
+        for key, (lo, hi, unit) in TUNING.items():
+            fields[vol.Required(key, default=self.values.get(key, DEFAULT_OPTIONS[key]))] = (
+                selector.NumberSelector(
                     selector.NumberSelectorConfig(
                         min=lo, max=hi, step=1, unit_of_measurement=unit,
                         mode=selector.NumberSelectorMode.BOX,
                     )
                 )
-                for key, (lo, hi, unit) in TUNING.items()
-            }
-        )  # fmt: skip
-        return self.async_show_form(step_id="tuning", data_schema=schema)
+            )  # fmt: skip
+        return self.async_show_form(step_id="notify", data_schema=vol.Schema(fields))
 
     def _finish(self) -> ConfigFlowResult:  # pragma: no cover - implemented by subclasses
         raise NotImplementedError

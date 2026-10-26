@@ -50,11 +50,8 @@
         }
       },
       "notify": {
-        "title": "Benachrichtigungen",
-        "description": "Handy jeder Person (Companion-App) für Vorwarnung, Heimkommen-Frage und Fehler. Leer lassen = keine Benachrichtigung."
-      },
-      "tuning": {
-        "title": "Feinabstimmung",
+        "title": "Benachrichtigungen & Feinabstimmung",
+        "description": "Handy jeder Person (Companion-App) für Vorwarnung, Heimkommen-Frage und Fehler. Leer lassen = keine Benachrichtigung.",
         "data": {
           "stage_pause": "Pause zwischen Etappen",
           "away_delay": "Mindestens weg seit",
@@ -131,11 +128,8 @@
         }
       },
       "notify": {
-        "title": "Benachrichtigungen",
-        "description": "Handy jeder Person (Companion-App) für Vorwarnung, Heimkommen-Frage und Fehler. Leer lassen = keine Benachrichtigung."
-      },
-      "tuning": {
-        "title": "Feinabstimmung",
+        "title": "Benachrichtigungen & Feinabstimmung",
+        "description": "Handy jeder Person (Companion-App) für Vorwarnung, Heimkommen-Frage und Fehler. Leer lassen = keine Benachrichtigung.",
         "data": {
           "stage_pause": "Pause zwischen Etappen",
           "away_delay": "Mindestens weg seit",

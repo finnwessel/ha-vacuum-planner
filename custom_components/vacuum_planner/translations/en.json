@@ -50,11 +50,8 @@
         }
       },
       "notify": {
-        "title": "Notifications",
-        "description": "Phone of each person (Companion app) for pre-warnings, return questions and errors. Leave empty for no notifications."
-      },
-      "tuning": {
-        "title": "Fine tuning",
+        "title": "Notifications & fine tuning",
+        "description": "Phone of each person (Companion app) for pre-warnings, return questions and errors. Leave empty for no notifications.",
         "data": {
           "stage_pause": "Pause between stages",
           "away_delay": "Away for at least",
@@ -131,11 +128,8 @@
         }
       },
       "notify": {
-        "title": "Notifications",
-        "description": "Phone of each person (Companion app) for pre-warnings, return questions and errors. Leave empty for no notifications."
-      },
-      "tuning": {
-        "title": "Fine tuning",
+        "title": "Notifications & fine tuning",
+        "description": "Phone of each person (Companion app) for pre-warnings, return questions and errors. Leave empty for no notifications.",
         "data": {
           "stage_pause": "Pause between stages",
           "away_delay": "Away for at least",

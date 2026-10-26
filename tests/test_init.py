@@ -175,8 +175,6 @@ async def test_config_flow(hass: HomeAssistant) -> None:
         result["flow_id"], {"name": "Küche", "icon": "mdi:pot", "blockers": [], "position": 1}
     )
     assert result["step_id"] == "notify"
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
-    assert result["step_id"] == "tuning"
     result = await hass.config_entries.flow.async_configure(result["flow_id"], dict(DEFAULT_OPTIONS))
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert [r["name"] for r in result["options"][CONF_ROOMS]] == ["Küche", "Flur"]
