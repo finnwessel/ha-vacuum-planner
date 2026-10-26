@@ -1093,7 +1093,10 @@ class VacuumPlanner:
         device = dr.async_get(self.hass).async_get(device_id)
         if device is None:
             return None
-        for entry_id in device.config_entries:
+        entry_ids = [getattr(device, "config_entry_id", None)] or []
+        if not entry_ids[0]:
+            entry_ids = list(device.config_entries)
+        for entry_id in entry_ids:
             entry = self.hass.config_entries.async_get_entry(entry_id)
             if entry is not None and entry.domain == "mobile_app":
                 name = entry.data.get("device_name") or device.name or ""
