@@ -1,55 +1,55 @@
-.entry: &entry
-  config_entry_id:
-    selector:
-      config_entry:
-        integration: vacuum_planner
-
-.rooms: &rooms
-  required: true
-  example: "[1, \"Flur\"]"
-  selector:
-    text:
-      multiple: true
-
-.room: &room
-  required: true
-  example: "Kitchen"
-  selector:
-    text:
-
-.mode: &mode
-  selector:
-    select:
-      translation_key: mode
-      options:
-        - vacuum
-        - vacuum_mop
-        - mop
-        - mopping_after_sweeping
-
 enqueue:
   fields:
-    <<: *entry
-    rooms: *rooms
-    mode: *mode
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
+    rooms:
+      required: true
+      example: '[1, "Flur"]'
+      selector:
+        text:
+          multiple: true
+    mode:
+      selector:
+        select:
+          translation_key: mode
+          options:
+          - vacuum
+          - vacuum_mop
+          - mop
+          - mopping_after_sweeping
     front:
       default: false
       selector:
-        boolean:
-
+        boolean: null
 dequeue:
   fields:
-    <<: *entry
-    rooms: *rooms
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
+    rooms:
+      required: true
+      example: '[1, "Flur"]'
+      selector:
+        text:
+          multiple: true
     skip_today:
       default: true
       selector:
-        boolean:
-
+        boolean: null
 move:
   fields:
-    <<: *entry
-    room: *room
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
+    room:
+      required: true
+      example: Kitchen
+      selector:
+        text: null
     position:
       required: true
       default: 0
@@ -58,79 +58,114 @@ move:
           min: 0
           max: 30
           mode: box
-
 clear_queue:
   fields:
-    <<: *entry
-
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
 enqueue_due:
   fields:
-    <<: *entry
-
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
 start:
   fields:
-    <<: *entry
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
     force:
       default: true
       selector:
-        boolean:
-
+        boolean: null
 stop:
   fields:
-    <<: *entry
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
     return_home:
       default: true
       selector:
-        boolean:
-
+        boolean: null
 clean_now:
   fields:
-    <<: *entry
-    rooms: *rooms
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
+    rooms:
+      required: true
+      example: '[1, "Flur"]'
+      selector:
+        text:
+          multiple: true
     mode:
       default: vacuum_mop
       selector:
         select:
           translation_key: mode
           options:
-            - vacuum
-            - vacuum_mop
-            - mop
-            - mopping_after_sweeping
-
+          - vacuum
+          - vacuum_mop
+          - mop
+          - mopping_after_sweeping
 pause_room:
   fields:
-    <<: *entry
-    rooms: *rooms
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
+    rooms:
+      required: true
+      example: '[1, "Flur"]'
+      selector:
+        text:
+          multiple: true
     until:
       selector:
-        datetime:
+        datetime: null
     days:
       selector:
         number:
           min: 1
           max: 60
           mode: box
-
 resume_room:
   fields:
-    <<: *entry
-    rooms: *rooms
-
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
+    rooms:
+      required: true
+      example: '[1, "Flur"]'
+      selector:
+        text:
+          multiple: true
 set_plan:
   fields:
-    <<: *entry
-    room: *room
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
+    room:
+      required: true
+      example: Kitchen
+      selector:
+        text: null
     mode:
       selector:
         select:
           translation_key: plan_mode
           options:
-            - "off"
-            - vacuum
-            - vacuum_mop
-            - mop
-            - mopping_after_sweeping
+          - 'off'
+          - vacuum
+          - vacuum_mop
+          - mop
+          - mopping_after_sweeping
     interval:
       selector:
         number:
@@ -138,19 +173,28 @@ set_plan:
           max: 30
           unit_of_measurement: d
           mode: box
-
 set_last_cleaned:
   fields:
-    <<: *entry
-    rooms: *rooms
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
+    rooms:
+      required: true
+      example: '[1, "Flur"]'
+      selector:
+        text:
+          multiple: true
     timestamp:
       selector:
-        datetime:
-
+        datetime: null
 skip_today:
   fields:
-    <<: *entry
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: vacuum_planner
     skip:
       default: true
       selector:
-        boolean:
+        boolean: null

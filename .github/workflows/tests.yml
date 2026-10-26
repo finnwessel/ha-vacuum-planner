@@ -13,4 +13,19 @@ jobs:
         with:
           python-version: "3.14"
       - run: pip install -r requirements_test.txt
-      - run: pytest -q
+      - name: Run pytest
+        run: |
+          set -o pipefail
+          pytest -q --tb=short -p no:cacheprovider 2>&1 | tee pytest.log
+      - name: Report failures
+        if: failure()
+        run: |
+          grep -E "^(FAILED|ERROR) " pytest.log | head -8 | sed 's/^/::error::/' || true
+          python3 - <<'PY'
+          import re
+          log = open("pytest.log").read()
+          blocks = re.split(r"\n_{5,} (.+?) _{5,}\n", log)
+          for name, body in list(zip(blocks[1::2], blocks[2::2]))[:6]:
+              text = (name + "\n" + body[-2500:]).replace("%", "%25").replace("\r", "").replace("\n", "%0A")
+              print(f"::error title=pytest::{text}")
+          PY
