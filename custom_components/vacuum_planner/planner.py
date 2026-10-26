@@ -16,7 +16,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.event import (
     async_track_state_change_event,
-    async_track_time_change,
+    async_track_time_interval,
 )
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
@@ -263,13 +263,12 @@ class VacuumPlanner:
             *([self._nearest] if self._nearest else []),
             *{b for cfg in self.room_cfg.values() for b in cfg.get(ROOM_BLOCKERS, [])},
         ]
-        self._unsubs.append(
-            async_track_state_change_event(self.hass, list(dict.fromkeys(watched)), self._on_state)
-        )
-        self._unsubs.append(async_track_time_change(self.hass, self._on_tick, second=5))
-        self._unsubs.append(
-            self.hass.bus.async_listen("mobile_app_notification_action", self._on_action)
-        )
+        for unsub in (
+            async_track_state_change_event(self.hass, list(dict.fromkeys(watched)), self._on_state),
+            async_track_time_interval(self.hass, self._on_tick, timedelta(minutes=1)),
+            self.hass.bus.async_listen("mobile_app_notification_action", self._on_action),
+        ):
+            self.entry.async_on_unload(unsub)
         self._schedule()
 
     async def async_stop(self) -> None:
@@ -1053,11 +1052,8 @@ class VacuumPlanner:
             await self._async_clear(TAG_PLAN_B, self.persons)
         days = int(self.settings[SET_PLAN_B_DAYS])
         at: time = self.settings[SET_PLAN_B_TIME]
-        if (
-            days <= 0
-            or self._plan_b_day == now.date()
-            or (now.hour, now.minute) != (at.hour, at.minute)
-        ):
+        ask_at = now.replace(hour=at.hour, minute=at.minute, second=0, microsecond=0)
+        if days <= 0 or self._plan_b_day == now.date() or not ask_at <= now < ask_at + timedelta(minutes=5):
             return
         self._plan_b_day = now.date()
         if self.session_active or self._guest() or not self.queue or not self.settings[SET_AUTO]:
