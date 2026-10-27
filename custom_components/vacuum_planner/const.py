@@ -135,5 +135,12 @@ TAG_RETURN: Final = "vacuum_planner_return"
 TAG_PLAN_B: Final = "vacuum_planner_plan_b"
 TAG_ERROR: Final = "vacuum_planner_error"
 TAG_SKIPPED: Final = "vacuum_planner_skipped"
+# Companion-app data for pushes with actions: high FCM priority + ttl 0 on Android,
+# time-sensitive interruption level on iOS.
+PUSH_URGENT: Final = {
+    "priority": "high",
+    "ttl": 0,
+    "push": {"interruption-level": "time-sensitive"},
+}
 
 EVENT_JOB_FINISHED: Final = f"{DOMAIN}_job_finished"

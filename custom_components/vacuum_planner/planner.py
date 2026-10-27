@@ -57,6 +57,7 @@ from .const import (
     MODE_OFF,
     MODE_VACUUM,
     MODE_VACUUM_MOP,
+    PUSH_URGENT,
     ROOM_BLOCKERS,
     ROOM_ICON,
     ROOM_ID,
@@ -795,7 +796,8 @@ class VacuumPlanner:
                 if now < self.prewarn_until:
                     self._set(STATE_PREWARN, "prewarn", until=self.prewarn_until.isoformat())
                     return
-        self.prewarn_until = None
+        # The prewarn is over: remove it so a late delivery can't show stale times and buttons.
+        await self._async_cancel_prewarn()
         self.session_active = True
         await self._async_start_job(stage, now, forced=self.session_forced)
 
@@ -1112,6 +1114,9 @@ class VacuumPlanner:
         data: dict[str, Any] = {"tag": tag}
         if actions:
             data["actions"] = [{"action": a, "title": t} for a, t in actions]
+            # Pushes that ask for a decision are time-critical: deliver them right away
+            # instead of letting Android Doze (FCM normal priority) or iOS batch them.
+            data.update(PUSH_URGENT)
         for person in persons:
             service = self.notify_service(person)
             if service is None:

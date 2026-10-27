@@ -20,7 +20,8 @@ Entstanden aus den Automationen „Saugplan & Warteschlange“ und jetzt als eig
 7. **Erledigt** ist ein Raum erst, wenn der Auftrag mit `Completed` endet, nicht unterbrochen wurde und der gefahrene Modus den geplanten abdeckt.
 8. **Heimkommen.** Nähert sich jemand, während er putzt, bekommt diese Person eine Push-Nachricht mit „Zur Station“ / „Weitermachen“. Ohne Antwort fährt er nach 3 Minuten zurück; die Räume bleiben dann in der Warteschlange.
 9. **Fehler.** Bei einem Fehler gibt es eine Push-Nachricht an alle. Die Räume des Auftrags laufen beim nächsten Mal **einzeln**, damit klar wird, welcher Raum das Problem ist. Scheitert ein Raum öfter als „Wiederholungen nach Fehler“ erlaubt, wird er bis morgen ausgelassen.
-10. **Plan B.** Ist ein Raum seit N Tagen überfällig (weil ihr nicht weg wart), fragt die Integration zur eingestellten Uhrzeit nach, ob jetzt geputzt werden soll.
+10. **Push-Nachrichten.** Nachrichten mit Buttons (Vorwarnung, Heimkommen, Plan B) gehen mit hoher Priorität raus (`priority: high`, `ttl: 0`, auf iOS `time-sensitive`), damit Android sie im Doze-Modus nicht zurückhält. Die Vorwarnung wird beim Start wieder entfernt, damit eine verspätete Zustellung keine veralteten Zeiten und Buttons zeigt.
+11. **Plan B.** Ist ein Raum seit N Tagen überfällig (weil ihr nicht weg wart), fragt die Integration zur eingestellten Uhrzeit nach, ob jetzt geputzt werden soll.
 
 ## Installation (HACS)
 

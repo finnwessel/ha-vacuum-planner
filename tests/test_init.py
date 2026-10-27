@@ -214,10 +214,17 @@ async def test_run_in_stages_while_away(
     await hass.async_block_till_done()
     assert _status(hass) == ("prewarn", "prewarn")
     assert len(notify) == 1
+    assert notify[0].data["data"]["priority"] == "high"
+    assert notify[0].data["data"]["ttl"] == 0
     assert not send
 
     await _tick(hass, freezer, 6)
     assert len(send) == 1
+    # starting removes the prewarn so a late delivery can't show stale info
+    assert notify[-1].data == {
+        "message": "clear_notification",
+        "data": {"tag": "vacuum_planner_prewarn"},
+    }
     assert send[0].data["params"]["rooms"] == [{"id": 4, "clean_mode": "vacuum"}]  # dry first
     hass.states.async_set(TASK, "Cleaning")
     hass.states.async_set(VACUUM, "cleaning")
