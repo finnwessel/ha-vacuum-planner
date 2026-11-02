@@ -228,8 +228,13 @@ class Queue:
         source: str,
         now: datetime,
         front: bool = False,
+        order: list[int] | None = None,
     ) -> bool:
-        """Add a room or widen the mode of its entry. Returns True if something changed."""
+        """Add a room or widen the mode of its entry. Returns True if something changed.
+
+        New entries go to the front, right after the last entry earlier on the
+        route ``order``, or to the end.
+        """
         if mode not in CLEAN_MODES:
             raise ValueError(f"invalid mode {mode}")
         item = self.get(room_id)
@@ -248,6 +253,10 @@ class Queue:
         new = QueueItem(room_id, mode, source, now)
         if front:
             self.items.insert(0, new)
+        elif order is not None:
+            key = _route_key(order)
+            earlier = [i for i, it in enumerate(self.items) if key(it.room_id) < key(room_id)]
+            self.items.insert(earlier[-1] + 1 if earlier else 0, new)
         else:
             self.items.append(new)
         return True
@@ -298,11 +307,15 @@ class Queue:
 
 
 def sync_due(queue: Queue, rooms: dict[int, RoomPlan], now: datetime) -> list[int]:
-    """Put every due room into the queue (with its plan mode). Returns added room ids."""
+    """Put every due room into the queue (with its plan mode). Returns added room ids.
+
+    ``rooms`` is in route order; new entries are slotted in along that route.
+    """
     added = []
+    order = list(rooms)
     for room in rooms.values():
         if room.is_due(now) and room.room_id not in queue:
-            queue.add(room.room_id, room.mode, SOURCE_PLAN, now)
+            queue.add(room.room_id, room.mode, SOURCE_PLAN, now, order=order)
             added.append(room.room_id)
         elif room.is_due(now):
             item = queue.get(room.room_id)
@@ -329,11 +342,13 @@ def _route_key(order: list[int]):
 def build_stages(
     queue: Queue,
     rooms: dict[int, RoomPlan],
-    order: list[int],
     overhead: float,
     exclude: set[int] | None = None,
 ) -> list[Stage]:
-    """All stages the queue would need, in the order they run (preview, no budget)."""
+    """All stages the queue would need, in the order they run (preview, no budget).
+
+    Rooms of a stage keep their queue order.
+    """
     exclude = exclude or set()
     normal: dict[str, list[int]] = {}
     isolated: list[QueueItem] = []
@@ -347,7 +362,7 @@ def build_stages(
         normal.setdefault(item.mode, []).append(item.room_id)
     stages = []
     for mode in sorted(normal, key=lambda m: STAGE_ORDER.get(m, 9)):
-        ids = sorted(normal[mode], key=_route_key(order))
+        ids = normal[mode]
         minutes = overhead + sum(_estimate(rooms, rid, mode) for rid in ids)
         stages.append(Stage(mode, ids, minutes))
     for item in isolated:
@@ -373,7 +388,6 @@ def _priority(item: QueueItem, rooms: dict[int, RoomPlan], now: datetime) -> tup
 def plan_stage(
     queue: Queue,
     rooms: dict[int, RoomPlan],
-    order: list[int],
     now: datetime,
     budget: float | None,
     overhead: float,
@@ -382,10 +396,10 @@ def plan_stage(
     """Pick the next job that fits into ``budget`` minutes (None = no limit).
 
     Stages run dry → wet; within a stage the most important rooms are chosen
-    first until the budget is used up, then driven in route order.
+    first until the budget is used up, then driven in queue order.
     """
     blocked = blocked or set()
-    for stage in build_stages(queue, rooms, order, overhead, exclude=blocked):
+    for stage in build_stages(queue, rooms, overhead, exclude=blocked):
         if budget is None:
             return stage
         items = [queue.get(rid) for rid in stage.room_ids]
@@ -398,15 +412,15 @@ def plan_stage(
                 chosen.append(item.room_id)
                 total += minutes
         if chosen:
-            chosen.sort(key=_route_key(order))
+            chosen.sort(key=stage.room_ids.index)
             return Stage(stage.mode, chosen, total, stage.isolated)
     return None
 
 
 def queue_minutes(
-    queue: Queue, rooms: dict[int, RoomPlan], order: list[int], overhead: float, pause: float
+    queue: Queue, rooms: dict[int, RoomPlan], overhead: float, pause: float
 ) -> float:
-    stages = build_stages(queue, rooms, order, overhead)
+    stages = build_stages(queue, rooms, overhead)
     if not stages:
         return 0.0
     return sum(stage.minutes for stage in stages) + pause * (len(stages) - 1)

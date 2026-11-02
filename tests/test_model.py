@@ -82,18 +82,19 @@ def test_manual_add_merges_mode_and_upgrades_source():
 def test_stages_run_dry_before_wet_in_route_order():
     rooms = _rooms()
     queue = Queue()
-    queue.add(6, "vacuum_mop", SOURCE_PLAN, NOW)
-    queue.add(7, "vacuum", SOURCE_PLAN, NOW)
-    queue.add(1, "vacuum_mop", SOURCE_PLAN, NOW)
-    queue.add(5, "mop", SOURCE_MANUAL, NOW)
-    stages = build_stages(queue, rooms, ORDER, overhead=4)
+    queue.add(6, "vacuum_mop", SOURCE_PLAN, NOW, order=ORDER)
+    queue.add(7, "vacuum", SOURCE_PLAN, NOW, order=ORDER)
+    queue.add(1, "vacuum_mop", SOURCE_PLAN, NOW, order=ORDER)
+    queue.add(5, "mop", SOURCE_MANUAL, NOW, order=ORDER)
+    assert [i.room_id for i in queue.items] == [1, 5, 7, 6]
+    stages = build_stages(queue, rooms, overhead=4)
     assert [(s.mode, s.room_ids) for s in stages] == [
         ("vacuum", [7]),
         ("vacuum_mop", [1, 6]),
         ("mop", [5]),
     ]
     assert stages[1].minutes == 4 + 10 + 10
-    assert queue_minutes(queue, rooms, ORDER, 4, 2) == (4 + 8) + (4 + 20) + (4 + 10) + 2 * 2
+    assert queue_minutes(queue, rooms, 4, 2) == (4 + 8) + (4 + 20) + (4 + 10) + 2 * 2
 
 
 def test_budget_picks_most_urgent_rooms_first():
@@ -102,11 +103,26 @@ def test_budget_picks_most_urgent_rooms_first():
     for rid in (1, 4, 6):
         queue.add(rid, "vacuum_mop", SOURCE_PLAN, NOW)
     # 6 never cleaned (most urgent), 4 three days on a 2-day plan, 1 exactly due
-    stage = plan_stage(queue, rooms, ORDER, NOW, budget=4 + 20, overhead=4)
+    stage = plan_stage(queue, rooms, NOW, budget=4 + 20, overhead=4)
     assert stage.room_ids == [4, 6]
-    assert plan_stage(queue, rooms, ORDER, NOW, budget=10, overhead=4) is None
-    full = plan_stage(queue, rooms, ORDER, NOW, budget=None, overhead=4)
+    assert plan_stage(queue, rooms, NOW, budget=10, overhead=4) is None
+    full = plan_stage(queue, rooms, NOW, budget=None, overhead=4)
     assert full.room_ids == [1, 4, 6]
+
+
+def test_moved_rooms_keep_their_place_in_the_stage():
+    rooms = _rooms()
+    queue = Queue()
+    sync_due(queue, rooms, NOW)
+    assert [i.room_id for i in queue.items] == [1, 4, 7, 6]
+    queue.move(6, 0)
+    queue.move(1, 3)
+    assert build_stages(queue, rooms, overhead=4)[1].room_ids == [6, 4, 1]
+    assert plan_stage(queue, rooms, NOW, budget=4 + 20, overhead=4, blocked={7}).room_ids == [6, 4]
+    # a newly due room is slotted in along the route, moved rooms stay put
+    queue.add(5, "vacuum_mop", SOURCE_PLAN, NOW, order=ORDER)
+    queue.add(4, "vacuum_mop", SOURCE_MANUAL, NOW, front=True, order=ORDER)
+    assert [i.room_id for i in queue.items] == [4, 6, 7, 1, 5]
 
 
 def test_manual_rooms_beat_plan_rooms_in_tight_budget():
@@ -114,7 +130,7 @@ def test_manual_rooms_beat_plan_rooms_in_tight_budget():
     queue = Queue()
     queue.add(6, "vacuum_mop", SOURCE_PLAN, NOW)
     queue.add(5, "vacuum_mop", SOURCE_MANUAL, NOW)
-    stage = plan_stage(queue, rooms, ORDER, NOW, budget=14, overhead=4)
+    stage = plan_stage(queue, rooms, NOW, budget=14, overhead=4)
     assert stage.room_ids == [5]
 
 
@@ -123,7 +139,7 @@ def test_blocked_room_is_skipped_and_next_stage_used():
     queue = Queue()
     queue.add(5, "vacuum", SOURCE_MANUAL, NOW)
     queue.add(1, "vacuum_mop", SOURCE_PLAN, NOW)
-    stage = plan_stage(queue, rooms, ORDER, NOW, budget=None, overhead=4, blocked={5})
+    stage = plan_stage(queue, rooms, NOW, budget=None, overhead=4, blocked={5})
     assert (stage.mode, stage.room_ids) == ("vacuum_mop", [1])
 
 
@@ -133,7 +149,7 @@ def test_failed_rooms_run_alone_after_the_rest():
     queue = Queue()
     for rid in (1, 4, 6):
         queue.add(rid, "vacuum_mop", SOURCE_PLAN, NOW)
-    stages = build_stages(queue, rooms, ORDER, overhead=4)
+    stages = build_stages(queue, rooms, overhead=4)
     assert [(s.room_ids, s.isolated) for s in stages] == [([1, 6], False), ([4], True)]
 
 

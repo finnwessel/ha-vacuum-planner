@@ -194,13 +194,20 @@ async def test_due_rooms_are_queued_every_day(
     await _tick(hass, freezer, 60)
     assert _queue(hass) == [4]
     await _tick(hass, freezer, 14 * 60 + 5)  # next day 00:05
-    assert _queue(hass) == [4, 1]
+    assert _queue(hass) == [1, 4]  # back in its place on the route
 
     # manual entries go to the front when asked; living room not due → manual
     await hass.services.async_call(DOMAIN, "enqueue", {"rooms": [5], "front": True}, blocking=True)
     await hass.async_block_till_done()
-    queue = hass.states.get("sensor.vacuum_planner_queue").attributes["items"]
-    assert [(i["id"], i["source"]) for i in queue][0] == (5, "manual")
+    attrs = hass.states.get("sensor.vacuum_planner_queue").attributes
+    assert [(i["id"], i["source"]) for i in attrs["items"]][0] == (5, "manual")
+    assert [s["rooms"] for s in attrs["stages"]] == [[4], [5, 1]]  # dry before wet
+
+    # ...and the stage follows when a room is moved
+    await hass.services.async_call(DOMAIN, "move", {"room": 1, "position": 0}, blocking=True)
+    await hass.async_block_till_done()
+    attrs = hass.states.get("sensor.vacuum_planner_queue").attributes
+    assert [s["rooms"] for s in attrs["stages"]] == [[4], [1, 5]]
 
 
 async def test_run_in_stages_while_away(

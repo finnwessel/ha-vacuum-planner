@@ -744,7 +744,7 @@ class VacuumPlanner:
         self.budget = self._budget(now)
         blocked = self._blocked_rooms(now)
         self.next_stage = plan_stage(
-            self.queue, self.rooms, self.order, now, self.budget, self._overhead(), set(blocked)
+            self.queue, self.rooms, now, self.budget, self._overhead(), set(blocked)
         )
         if not self.queue:
             await self._async_end_session()
@@ -1233,7 +1233,7 @@ class VacuumPlanner:
         for rid in reversed(room_ids) if front else room_ids:
             room = self.rooms[rid]
             use = mode or (room.mode if room.mode != MODE_OFF else MODE_VACUUM_MOP)
-            self.queue.add(rid, use, SOURCE_MANUAL, now, front=front)
+            self.queue.add(rid, use, SOURCE_MANUAL, now, front=front, order=self.order)
             if mode is not None:
                 self.queue.get(rid).mode = mode  # an explicit mode replaces the entry's mode
             if room.skip_reason == SKIP_TODAY:
@@ -1381,8 +1381,8 @@ class VacuumPlanner:
         blocked = self._blocked_rooms(now)
         overhead = self._overhead()
         pause = float(self.opt[CONF_STAGE_PAUSE])
-        stages = build_stages(self.queue, self.rooms, self.order, overhead)
-        total = queue_minutes(self.queue, self.rooms, self.order, overhead, pause)
+        stages = build_stages(self.queue, self.rooms, overhead)
+        total = queue_minutes(self.queue, self.rooms, overhead, pause)
         running = set(self.job.room_ids) if self.job else set()
         items = []
         for item in self.queue.items:
